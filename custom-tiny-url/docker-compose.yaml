@@ -1,0 +1,33 @@
+version: '3'
+services:
+  custom-tiny-service:
+    image: aloksingh7/customtinyurl
+    ports:
+     - "8084:8084"
+    networks:
+     - custom-tiny-network
+    depends_on:
+      - "redis-tiny-url"
+  custom-tiny-frontend:
+    image: aloksingh7/custom-tiny-url-frontend
+    ports:
+      - "8082:8082"
+    networks:
+      - custom-tiny-network
+    depends_on:
+      - "redis-tiny-url"
+  redis-tiny-url:
+    image: redis
+    hostname: redis
+    command: [ "redis-server", "--protected-mode", "no" ]
+    ports:
+      - "6379:6379"
+    networks:
+      - custom-tiny-network
+    volumes:
+     - redis_data:/data
+networks:
+  custom-tiny-network:
+    driver: bridge
+volumes:
+  redis_data:
